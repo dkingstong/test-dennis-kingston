@@ -11,6 +11,9 @@ const DocumentController = {
     create: async (req, res) => {
         const { Document } = await db.getModels();
         const document = new Document(req.body);
+        if(!document.name) {
+            return res.status(400).json({message: 'Document must have a name'});
+        }
         document.documentId = Math.random().toString(36).substr(2, 9);
         document.version = 1;
         document.isLastVersion = true;

@@ -1,5 +1,6 @@
 import { db } from '../models';
 import _ from 'lodash';
+import { Op } from 'sequelize';
 
 const DocumentController = {
     index: async (req, res) => {
@@ -13,6 +14,14 @@ const DocumentController = {
         document.documentId = Math.random().toString(36).substr(2, 9);
         document.version = 1;
         document.isLastVersion = true;
+        const savedDoc = await Document.findOne({
+            where: {
+                documentId: document.documentId
+            }
+        });
+        if (savedDoc) {
+            return res.status(200).json({message: 'Document with that id already exists'});
+        }
         await document.save();
         return res.status(200).json({ document });
     },
@@ -82,14 +91,15 @@ const DocumentController = {
     getUserDocuments: async (req, res) => {
         const { userId } = req.params;
         const { Document } = await db.getModels();
-        const result = await Document.findAll({
+        const userDocuments = await Document.findAll({
             where: {
                 [Op.or]: [
                     { ownerUserId: userId },
-                    { sharedTo: { [Op.contains]: userId } },
+                    { sharedTo: { [Op.overlap]: [userId] } },
                 ],
             },
         });
+        return res.status(200).json({ userDocuments });
     },
 };
 

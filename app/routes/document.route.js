@@ -7,7 +7,7 @@ documentRoutes.get('/', documentController.index);
 documentRoutes.get('/:documentId', documentController.show);
 documentRoutes.put('/:documentId', documentController.update);
 documentRoutes.get(
-    '/user-documents/:userId',
+    '/:userId/my-documents',
     documentController.getUserDocuments
 );
 documentRoutes.post('/', documentController.create);

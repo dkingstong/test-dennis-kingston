@@ -1,0 +1,5 @@
+export NODE_ENV=test
+export PORT=3000
+export TEST_DB_USERNAME=postgres
+export TEST_DB_PASSWORD=test
+export DB_NAME=easy_docs

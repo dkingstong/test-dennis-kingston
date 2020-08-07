@@ -1,12 +1,20 @@
 module.exports = (sequelize, DataTypes) => {
-  const Document = sequelize.define(
-    'document',
+  const VersionedDoc = sequelize.define(
+    'versioned_doc',
     {
       id: {
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
         type: DataTypes.BIGINT,
+      },
+      documentId: {
+        allowNull: false,
+        type: DataTypes.BIGINT,
+        references: {
+          model: 'Document',
+          key: 'id',
+        },
       },
       name: {
         type: DataTypes.STRING,
@@ -35,15 +43,11 @@ module.exports = (sequelize, DataTypes) => {
       updatedAt: 'updated_at',
     }
   );
-  Document.associate = function (models) {
-    Document.belongsToMany(models.User, {
-      through: 'UserDocument',
-      as: 'user',
+  VersionedDoc.associate = function (models) {
+    VersionedDoc.belongsTo(models.Document, {
+      as: 'document',
       foreignKey: 'documentId',
     });
-    Document.hasMany(models.VersionedDoc, {
-      as: 'versioned_doc',
-    });
   };
-  return Document;
+  return VersionedDoc;
 };

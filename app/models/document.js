@@ -8,12 +8,6 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         type: DataTypes.BIGINT,
       },
-      documentId: {
-        allowNull: false,
-        type: DataTypes.STRING,
-        required: true,
-        field: 'document_id',
-      },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -27,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       category: {
         type: DataTypes.ENUM,
         values: ['economics', 'political', 'social'],
+      },
+      version: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
     },
     {

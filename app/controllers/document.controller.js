@@ -9,36 +9,36 @@ const DocumentController = {
   },
 
   create: async (req, res) => {
-    const { Document } = await db.getModels();
-    const document = new Document(req.body);
-    if (!document.name) {
+    const { Document, User } = await db.getModels();
+    const { userId } = req.params;
+    if (!req.body.name) {
       return res.status(400).json({ message: 'Document must have a name' });
     }
-    document.documentId = Math.random().toString(36).substr(2, 9);
-    document.version = 1;
-    document.isLastVersion = true;
-    const savedDoc = await Document.findOne({
+
+    // in order to create a doc a user must exist in the DB
+    const user = await User.findOne({
       where: {
-        documentId: document.documentId,
+        id: userId,
       },
     });
-    if (savedDoc) {
-      return res
-        .status(200)
-        .json({ message: 'Document with that id already exists' });
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
     }
+
+    const document = new Document(req.body);
     await document.save();
     return res.status(200).json({ document });
   },
 
   show: async (req, res) => {
     const { documentId } = req.params;
+
     try {
       const { Document } = await db.getModels();
+
       const document = await Document.findOne({
         where: {
-          documentId,
-          isLastVersion: true,
+          id: documentId,
         },
       });
       if (!document) {
@@ -46,6 +46,7 @@ const DocumentController = {
           .status(404)
           .json({ message: `Document ${documentId} not found` });
       }
+
       return res.status(200).json({ document });
     } catch (error) {
       return res.status(500).json({
@@ -57,37 +58,29 @@ const DocumentController = {
 
   update: async (req, res) => {
     const { documentId } = req.params;
-    const { Document } = await db.getModels();
+
     try {
-      let latestVersionDocument = await Document.findOne({
+      const { Document, VersionedDocument } = await db.getModels();
+      const document = await Document.findOne({
         where: {
-          documentId,
-          isLastVersion: true,
+          id: documentId,
         },
       });
-      if (!latestVersionDocument) {
+
+      if (!document) {
         return res
           .status(404)
           .json({ message: `Document ${documentId} not found` });
       }
-      const newValues = _.pick(req.body, [
-        'content',
-        'category',
-        'url',
-        'sharedTo',
-        'name',
-      ]);
-      newValues.version = latestVersionDocument.version + 1;
-      const { id, ...latestDocument } = latestVersionDocument.dataValues;
-      const newLatestVersionDocument = new Document({
-        ...latestDocument,
-        ...newValues,
-      });
-      await newLatestVersionDocument.save();
-      await latestVersionDocument.update({
-        isLastVersion: false,
-      });
-      return res.status(200).json({ newLatestVersionDocument });
+
+      const versionedDocument = docToVersionedDoc(document);
+
+      await new VersionedDocument(versionedDocument).save();
+      await document.update(
+        _.pick(req.body, ['name', 'url', 'content', 'category'])
+      );
+
+      return res.status(200).json({ document });
     } catch (error) {
       return res.status(500).json({
         err: error.message,
@@ -96,7 +89,9 @@ const DocumentController = {
     }
   },
 
-  share: async (req, res) => {},
+  share: async (req, res) => {
+    const { userId } = req.params;
+  },
 };
 
 export default DocumentController;

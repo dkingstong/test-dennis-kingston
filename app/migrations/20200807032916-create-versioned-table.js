@@ -9,7 +9,7 @@ module.exports = {
       },
       documentId: {
         allowNull: false,
-        type: DataTypes.BIGINT,
+        type: Sequelize.BIGINT,
         references: {
           model: 'document',
           key: 'id',

@@ -79,7 +79,7 @@ const DocumentController = {
           .status(404)
           .json({ message: `Document ${documentId} not found` });
       }
-
+      //convert from document to versionedDocument
       const versionedDocument = docToVersionedDoc(document);
 
       await new VersionedDoc(versionedDocument).save();
@@ -97,7 +97,33 @@ const DocumentController = {
   },
 
   share: async (req, res) => {
-    const { userId } = req.params;
+    try {
+      const { documentId } = req.params;
+      const { userIds } = req.body;
+      const { UserDocument, User } = await db.getModels();
+
+      // check if user exists to add it to the doc
+      for (let userId of userIds) {
+        const user = User.findOne({
+          where: {
+            id: userId,
+          },
+        });
+        if (user) {
+          await new UserDocument({
+            documentId,
+            userId,
+          }).save();
+        }
+      }
+
+      return res.status(200).json({ message: 'Shared successfully' });
+    } catch (error) {
+      return res.status(500).json({
+        err: error.message,
+        message: 'Unexpected error',
+      });
+    }
   },
 };
 

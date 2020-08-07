@@ -134,7 +134,7 @@ const DocumentController = {
 
       // check if user exists to add it to the doc
       for (let userId of userIds) {
-        const user = User.findOne({
+        const user = await User.findOne({
           where: {
             id: userId,
           },

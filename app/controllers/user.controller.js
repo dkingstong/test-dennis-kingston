@@ -52,7 +52,7 @@ const UserController = {
 
     try {
       const { User } = await db.getModels();
-      const user = User.findOne({
+      const user = await User.findOne({
         where: {
           id: userId,
         },
@@ -61,7 +61,6 @@ const UserController = {
       if (!user) {
         return res.status(404).json({ message: `user ${userId} not found` });
       }
-
       await user.update(_.pick(req.body, ['firstName', 'lastName']));
 
       return res.status(200).json({
@@ -77,13 +76,19 @@ const UserController = {
 
   getUserDocuments: async (req, res) => {
     const { userId } = req.params;
-    const { UserDocument } = await db.getModels();
+    const { Document, User } = await db.getModels();
 
-    const userDocuments = await UserDocument.findAll({
-      where: {
-        userId,
-      },
-      include: Document,
+    const userDocuments = await Document.findAll({
+      include: [
+        {
+          model: User,
+          as: 'user',
+          where: {
+            id: userId,
+          },
+          attributes: ['firstName'],
+        },
+      ],
     });
 
     return res.status(200).json({ userDocuments });

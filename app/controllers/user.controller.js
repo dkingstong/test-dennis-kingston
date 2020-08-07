@@ -87,6 +87,9 @@ const UserController = {
             id: userId,
           },
           attributes: ['firstName'],
+          through: {
+            attributes: [],
+          },
         },
       ],
     });

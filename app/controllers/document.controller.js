@@ -5,7 +5,21 @@ import { docToVersionedDoc } from './helpers/versionedDoc.helper';
 const DocumentController = {
   index: async (req, res) => {
     const { Document } = await db.getModels();
-    const documents = await Document.findAll();
+    const documents = await Document.findAll({
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['firstName'],
+          through: {
+            attributes: [],
+            where: {
+              isOwner: true,
+            },
+          },
+        },
+      ],
+    });
     return res.status(200).json({ documents });
   },
 
@@ -33,7 +47,7 @@ const DocumentController = {
     await new UserDocument({
       userId,
       documentId: document.id,
-      //  isOwner: true
+      isOwner: true,
     }).save();
     return res.status(200).json({ document });
   },
@@ -48,6 +62,19 @@ const DocumentController = {
         where: {
           id: documentId,
         },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: ['firstName'],
+            through: {
+              attributes: [],
+              where: {
+                isOwner: true,
+              },
+            },
+          },
+        ],
       });
       if (!document) {
         return res

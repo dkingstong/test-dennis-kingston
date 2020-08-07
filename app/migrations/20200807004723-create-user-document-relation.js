@@ -17,6 +17,11 @@ module.exports = {
           key: 'id',
         },
       },
+      is_owner: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        field: 'is_owner',
+      },
     });
   },
 

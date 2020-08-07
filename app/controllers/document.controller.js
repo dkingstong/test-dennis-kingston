@@ -1,6 +1,5 @@
 import { db } from '../models';
 import _ from 'lodash';
-import { Op } from 'sequelize';
 
 const DocumentController = {
   index: async (req, res) => {
@@ -97,19 +96,7 @@ const DocumentController = {
     }
   },
 
-  getUserDocuments: async (req, res) => {
-    const { userId } = req.params;
-    const { Document } = await db.getModels();
-    const userDocuments = await Document.findAll({
-      where: {
-        [Op.or]: [
-          { ownerUserId: userId },
-          { sharedTo: { [Op.overlap]: [userId] } },
-        ],
-      },
-    });
-    return res.status(200).json({ userDocuments });
-  },
+  share: async (req, res) => {},
 };
 
 export default DocumentController;

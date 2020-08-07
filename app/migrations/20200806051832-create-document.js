@@ -26,22 +26,6 @@ module.exports = {
         type: Sequelize.ENUM,
         values: ['economics', 'political', 'social'],
       },
-      version: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        required: true,
-      },
-      owner_user_id: {
-        type: Sequelize.BIGINT,
-      },
-      shared_to: {
-        type: Sequelize.ARRAY(Sequelize.BIGINT),
-      },
-      is_last_version: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        required: true,
-      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

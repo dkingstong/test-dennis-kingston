@@ -6,10 +6,7 @@ const documentRoutes = Router({ mergeParams: true });
 documentRoutes.get('/', documentController.index);
 documentRoutes.get('/:documentId', documentController.show);
 documentRoutes.put('/:documentId', documentController.update);
-documentRoutes.get(
-    '/:userId/my-documents',
-    documentController.getUserDocuments
-);
+documentRoutes.get('/share/:userId', documentController.share);
 documentRoutes.post('/', documentController.create);
 
 module.exports = documentRoutes;

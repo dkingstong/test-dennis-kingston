@@ -1,6 +1,6 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('document', {
+    await queryInterface.createTable('versioned_doc', {
       id: {
         allowNull: false,
         primaryKey: true,

@@ -7,6 +7,6 @@ documentRoutes.get('/', documentController.index);
 documentRoutes.get('/:documentId', documentController.show);
 documentRoutes.put('/:documentId', documentController.update);
 documentRoutes.get('/share/:userId', documentController.share);
-documentRoutes.post('/', documentController.create);
+documentRoutes.post('/create/:userId', documentController.create);
 
 module.exports = documentRoutes;

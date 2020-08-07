@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
           key: 'id',
         },
       },
+      isOwner: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        field: 'is_owner',
+      },
     },
     {
       freezeTableName: true,

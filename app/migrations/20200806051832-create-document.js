@@ -16,9 +16,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      owner_name: {
-        type: Sequelize.STRING,
-      },
       url: {
         type: Sequelize.STRING,
       },

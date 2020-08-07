@@ -30,7 +30,7 @@ module.exports = {
         values: ['economics', 'political', 'social'],
       },
       version: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       created_at: {

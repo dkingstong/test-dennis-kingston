@@ -44,6 +44,6 @@ module.exports = {
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('document');
+    await queryInterface.dropTable('versioned_doc');
   },
 };

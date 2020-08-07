@@ -33,6 +33,7 @@ const DocumentController = {
     await new UserDocument({
       userId,
       documentId: document.id,
+      //  isOwner: true
     }).save();
     return res.status(200).json({ document });
   },
@@ -83,9 +84,11 @@ const DocumentController = {
       const versionedDocument = docToVersionedDoc(document);
 
       await new VersionedDoc(versionedDocument).save();
-      await document.update(
-        _.pick(req.body, ['name', 'url', 'content', 'category'])
-      );
+
+      await document.update({
+        version: document.version + 1,
+        ...req.body,
+      });
 
       return res.status(200).json({ document });
     } catch (error) {

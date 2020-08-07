@@ -7,7 +7,7 @@ module.exports = {
         autoIncrement: true,
         type: Sequelize.BIGINT,
       },
-      documentId: {
+      document_id: {
         allowNull: false,
         type: Sequelize.BIGINT,
         references: {

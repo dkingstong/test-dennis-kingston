@@ -1,5 +1,6 @@
 import { db } from '../models';
 import _ from 'lodash';
+import { docToVersionedDoc } from './helpers/versionedDoc.helper';
 
 const DocumentController = {
   index: async (req, res) => {
@@ -9,7 +10,7 @@ const DocumentController = {
   },
 
   create: async (req, res) => {
-    const { Document, User } = await db.getModels();
+    const { Document, User, UserDocument } = await db.getModels();
     const { userId } = req.params;
     if (!req.body.name) {
       return res.status(400).json({ message: 'Document must have a name' });
@@ -26,7 +27,13 @@ const DocumentController = {
     }
 
     const document = new Document(req.body);
+    document.version = 1;
     await document.save();
+    // save the relation in the relation table
+    await new UserDocument({
+      userId,
+      documentId: document.id,
+    }).save();
     return res.status(200).json({ document });
   },
 
@@ -60,7 +67,7 @@ const DocumentController = {
     const { documentId } = req.params;
 
     try {
-      const { Document, VersionedDocument } = await db.getModels();
+      const { Document, VersionedDoc } = await db.getModels();
       const document = await Document.findOne({
         where: {
           id: documentId,
@@ -75,7 +82,7 @@ const DocumentController = {
 
       const versionedDocument = docToVersionedDoc(document);
 
-      await new VersionedDocument(versionedDocument).save();
+      await new VersionedDoc(versionedDocument).save();
       await document.update(
         _.pick(req.body, ['name', 'url', 'content', 'category'])
       );

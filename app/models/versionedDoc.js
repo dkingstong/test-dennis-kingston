@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       documentId: {
         allowNull: false,
         type: DataTypes.BIGINT,
+        field: 'document_id',
         references: {
           model: 'Document',
           key: 'id',

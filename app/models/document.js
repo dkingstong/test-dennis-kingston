@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
   );
   Document.associate = function (models) {
     Document.belongsToMany(models.User, {
-      through: 'UserDocument',
+      through: 'user_document',
       as: 'user',
       foreignKey: 'documentId',
     });

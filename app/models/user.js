@@ -29,12 +29,13 @@ module.exports = (sequelize, DataTypes) => {
     {
       freezeTableName: true,
       underscored: true,
+      timestamps: false,
     }
   );
   User.associate = function (models) {
     User.belongsToMany(models.Document, {
-      through: 'UserDocument',
-      as: 'documents',
+      through: 'user_document',
+      as: 'document',
       foreignKey: 'userId',
     });
   };
